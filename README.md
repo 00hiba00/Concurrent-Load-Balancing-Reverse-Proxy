@@ -46,3 +46,25 @@
     - [ ] Stress test all features (SSL, Load Balancing, Health Checks) under realistic workloads.
 
 ---
+
+## 📂 Project Structure
+
+```text
+/concurrent-proxy
+├── README.md               <-- Roadmap and Documentation
+├── go.mod                  <-- Go dependencies and module info
+│
+├── /cmd                    <-- Main application entry points
+│   ├── /proxy              <-- The Reverse Proxy application
+│   │   └── main.go
+│   └── /backend            <-- The Test Backend API (Phase 1)
+│       └── main.go
+│
+├── /internal               <-- Private project logic
+│   ├── /balancer           <-- Load balancing strategies (Step 3 & 5)
+│   ├── /health             <-- Health check and failover logic (Step 4)
+│   ├── /security           <-- SSL/TLS and Rate limiting (Step 6)
+│   └── /analytics          <-- Metrics and logging (Step 7)
+│
+├── /certs                  <-- SSL/TLS Certificates
+└── /scripts                <-- Automation and testing scripts
