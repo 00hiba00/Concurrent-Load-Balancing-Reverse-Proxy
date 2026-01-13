@@ -50,7 +50,7 @@
 ## 📂 Project Structure
 
 ```text
-/concurrent-proxy
+/Concurrent-Load-Balancing-Reverse-Proxy
 ├── README.md               <-- Roadmap and Documentation
 ├── go.mod                  <-- Go dependencies and module info
 │
