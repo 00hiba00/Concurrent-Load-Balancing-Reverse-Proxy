@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"github.com/00hiba00/Concurrent-Load-Balancing-Reverse-Proxy/internal/models"
 )
 
 //----IMPORTANT----
@@ -45,7 +46,7 @@ func GetItemHandler(w http.ResponseWriter, r *http.Request){
 }
 
 func PostItemHandler(w http.ResponseWriter, r *http.Request){
-	var newBook Book
+	var newBook models.Book
 	err := json.NewDecoder(r.Body).Decode(&newBook)
     if err != nil {
         http.Error(w, "Invalid JSON data", http.StatusBadRequest)
@@ -63,7 +64,7 @@ func PostItemHandler(w http.ResponseWriter, r *http.Request){
 }
 
 func UpdateItemHandler(w http.ResponseWriter, r *http.Request){
-	var updatedBook Book
+	var updatedBook models.Book
 	err := json.NewDecoder(r.Body).Decode(&updatedBook)
     if err != nil {
         http.Error(w, "Invalid JSON data", http.StatusBadRequest)
@@ -99,8 +100,8 @@ func DeleteItemHandler(w http.ResponseWriter, r *http.Request){
 			copy(Books[i:], Books[i+1:])
 			//A slice is just a "window" looking at a fixed-size Underlying Array
 			//The Garbage Collector (GC) won't clean up that book because it thinks it's still "visible."
-			//By setting the last element to Book{} (an empty struct) before truncating, you "zero out" the memory so the GC can reclaim it
-			Books[len(Books)-1] = Book{}
+			//By setting the last element to models.Book{} (an empty struct) before truncating, you "zero out" the memory so the GC can reclaim it
+			Books[len(Books)-1] = models.Book{}
             Books = Books[:len(Books)-1]
 			w.WriteHeader(http.StatusNoContent)
 			return
