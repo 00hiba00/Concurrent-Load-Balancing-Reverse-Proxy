@@ -5,10 +5,10 @@
 ## 🚀 Project Roadmap & Progress
 
 ### Phase 1: Core Architecture (The Foundation)
-- [ ] **1. API Design & Mocking**
+- [x] **1. API Design & Mocking**
     - [x] Create a single Backend Server instance.
     - [x] Implement standard CRUD operations (Create, Read, Update, Delete).
-    - [ ] Build a simple Client to send requests to this API.
+    - [x] Build a simple Client to send requests to this API.
 - [ ] **2. Basic Reverse Proxy Implementation**
     - [ ] Establish a Proxy-to-Server connection.
     - [ ] Route: `Client` → `Proxy` → `Server`.
