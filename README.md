@@ -9,11 +9,11 @@
     - [x] Create a single Backend Server instance.
     - [x] Implement standard CRUD operations (Create, Read, Update, Delete).
     - [x] Build a simple Client to send requests to this API.
-- [ ] **2. Basic Reverse Proxy Implementation**
-    - [ ] Establish a Proxy-to-Server connection.
-    - [ ] Route: `Client` → `Proxy` → `Server`.
-    - [ ] Route: `Server` → `Proxy` → `Client`.
-    - [ ] Ensure request/response headers are preserved during the hop.
+- [x] **2. Basic Reverse Proxy Implementation**
+    - [x] Establish a Proxy-to-Server connection.
+    - [x] Route: `Client` → `Proxy` → `Server`.
+    - [x] Route: `Server` → `Proxy` → `Client`.
+    - [x] Ensure request/response headers are preserved during the hop.
 
 ### Phase 2: Multi-Server & Load Balancing
 - [ ] **3. Scaling the Backend**

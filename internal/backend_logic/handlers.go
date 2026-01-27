@@ -22,6 +22,10 @@ func GetItemsHandler(w http.ResponseWriter, r *http.Request){
         log.Printf("Failed to encode books: %v", err)
         return
     }
+	//test proxy headers
+	log.Printf("Incoming Request | Host: %s | Real IP: %s",
+           r.Header.Get("X-Forwarded-Host"),
+           r.Header.Get("X-Forwarded-For"))
 }
 
 func GetItemHandler(w http.ResponseWriter, r *http.Request){
