@@ -17,7 +17,7 @@
 
 ### Phase 2: Multi-Server & Load Balancing
 - [ ] **3. Scaling the Backend**
-    - [ ] Spin up multiple Backend Server instances.
+    - [x] Spin up multiple Backend Server instances.
     - [ ] Implement **Round-Robin** selection logic.
     - [ ] Implement **Least-Connections** selection logic.
     - [ ] *Optional:* Add performance benchmarking to compare strategy efficiency.

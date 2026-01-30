@@ -13,8 +13,10 @@ import (
 //-----DEAL WITH IT LATER-----
 
 func GetItemsHandler(w http.ResponseWriter, r *http.Request){
+	store.mux.RLock()
+	defer store.mux.RUnlock()
     w.Header().Set("Content-Type", "application/json")
-    err := json.NewEncoder(w).Encode(Books)
+    err := json.NewEncoder(w).Encode(store.Books)
     if err != nil {
         //In web development, once you start writing to the body(w.Write or Encode),
 		//you have technically sent a 200 OK status. If an error happens during the
@@ -29,12 +31,14 @@ func GetItemsHandler(w http.ResponseWriter, r *http.Request){
 }
 
 func GetItemHandler(w http.ResponseWriter, r *http.Request){
+	store.mux.RLock()
+	defer store.mux.RUnlock()
 	IdFromUrl := r.PathValue("id") //route: /books/{id}
 	if IdFromUrl == "" {
 		http.Error(w, "ID is required", http.StatusBadRequest)
         return
 	}
-	for _, currentBook := range Books {
+	for _, currentBook := range store.Books {
 		if currentBook.ID == IdFromUrl {
 			w.Header().Set("Content-Type", "application/json")
         	err := json.NewEncoder(w).Encode(currentBook)
@@ -57,7 +61,9 @@ func PostItemHandler(w http.ResponseWriter, r *http.Request){
         return
     }
     defer r.Body.Close()
-    Books = append(Books, newBook)
+	store.mux.Lock()
+	defer store.mux.Unlock()
+    store.Books = append(store.Books, newBook)
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusCreated)
 	//A simple struct with strings and integers is "safe."
@@ -80,13 +86,15 @@ func UpdateItemHandler(w http.ResponseWriter, r *http.Request){
 		http.Error(w, "ID is required", http.StatusBadRequest)
         return
 	}
-	for i := range Books {
-		if Books[i].ID == IdFromUrl {
+	store.mux.Lock()
+	defer store.mux.Unlock()
+	for i := range store.Books {
+		if store.Books[i].ID == IdFromUrl {
 			updatedBook.ID = IdFromUrl
-            Books[i] = updatedBook
+            store.Books[i] = updatedBook
 
 			w.Header().Set("Content-Type", "application/json")
-            json.NewEncoder(w).Encode(Books[i])
+            json.NewEncoder(w).Encode(store.Books[i])
             return
 		}
 	}
@@ -94,19 +102,21 @@ func UpdateItemHandler(w http.ResponseWriter, r *http.Request){
 }
 
 func DeleteItemHandler(w http.ResponseWriter, r *http.Request){
+	store.mux.Lock()
+	defer store.mux.Unlock()
 	IdFromUrl := r.PathValue("id") //route: /books/{id}
 	if IdFromUrl == "" {
 		http.Error(w, "ID is required", http.StatusBadRequest)
         return
 	}
-	for i, currentBook := range Books {
+	for i, currentBook := range store.Books {
 		if currentBook.ID == IdFromUrl {
-			copy(Books[i:], Books[i+1:])
+			copy(store.Books[i:], store.Books[i+1:])
 			//A slice is just a "window" looking at a fixed-size Underlying Array
 			//The Garbage Collector (GC) won't clean up that book because it thinks it's still "visible."
 			//By setting the last element to models.Book{} (an empty struct) before truncating, you "zero out" the memory so the GC can reclaim it
-			Books[len(Books)-1] = models.Book{}
-            Books = Books[:len(Books)-1]
+			store.Books[len(store.Books)-1] = models.Book{}
+            store.Books = store.Books[:len(store.Books)-1]
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
