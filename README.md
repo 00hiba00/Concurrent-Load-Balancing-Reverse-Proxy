@@ -18,8 +18,8 @@
 ### Phase 2: Multi-Server & Load Balancing
 - [ ] **3. Scaling the Backend**
     - [x] Spin up multiple Backend Server instances.
-    - [ ] Implement **Round-Robin** selection logic.
-    - [ ] Implement **Least-Connections** selection logic.
+    - [x] Implement **Round-Robin** selection logic.
+    - [x] Implement **Least-Connections** selection logic.
     - [ ] *Optional:* Add performance benchmarking to compare strategy efficiency.
 - [ ] **4. Active Health Monitoring**
     - [ ] Build an Admin API to manually `Add`, `Remove`, or `Check` server status.

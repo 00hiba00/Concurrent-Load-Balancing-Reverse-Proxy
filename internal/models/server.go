@@ -27,3 +27,24 @@ func (s *Server) SetAlive(alive bool){
 	defer s.Mux.Unlock()
 	s.Alive = alive
 }
+
+func (s *Server) GetActiveConnections() int {
+	s.Mux.RLock()
+	defer s.Mux.RUnlock()
+	return s.ActiveConnections
+}
+
+func (s *Server) IncrementConnections() {
+	s.Mux.Lock()
+	defer s.Mux.Unlock()
+	s.ActiveConnections++
+}
+
+func (s *Server) DecrementConnections() {
+	s.Mux.Lock()
+	defer s.Mux.Unlock()
+	// Safety check to ensure we never go below zero
+	if s.ActiveConnections > 0 {
+		s.ActiveConnections--
+	}
+}
