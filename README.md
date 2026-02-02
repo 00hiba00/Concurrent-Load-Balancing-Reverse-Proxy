@@ -22,9 +22,8 @@
     - [x] Implement **Least-Connections** selection logic.
     - [ ] *Optional:* Add performance benchmarking to compare strategy efficiency.
 - [ ] **4. Active Health Monitoring**
-    - [ ] Build an Admin API to manually `Add`, `Remove`, or `Check` server status.
+    - [x] Build an Admin API to manually `Add`, `Remove`, or `Check` server status.
     - [ ] Implement an automated "Pulse" check (Active Health Check) every 5 minutes.
-    - [ ] Implement **Failover Logic**: Automatically bypass down servers and redirect to functional ones.
 
 ### Phase 3: Advanced Traffic Management
 - [ ] **5. Persistence & Hardware Optimization**

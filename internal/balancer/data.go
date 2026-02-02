@@ -10,7 +10,7 @@ import (
 	"github.com/00hiba00/Concurrent-Load-Balancing-Reverse-Proxy/internal/models"
 )
 
-func newServer(rawURL string) *models.Server {
+func newServer(id string, rawURL string) *models.Server {
 	backendURL, err := url.Parse(rawURL)
 	if err != nil {
 		log.Fatal("Invalid backend URL:", err)
@@ -28,17 +28,15 @@ func newServer(rawURL string) *models.Server {
 	}
 
 	return &models.Server{
+		ID:           id,
 		URL:          backendURL,
 		Alive:        true,
 		ReverseProxy: proxy,
 	}
 }
 
+
 var Pool = &ServerPool{
-	Backends: []*models.Server{
-		newServer("http://localhost:8081"),
-        newServer("http://localhost:8082"),
-        newServer("http://localhost:8083"),
-	},
+	Backends: []*models.Server{},
 	Strategy: "round-robin",
 }

@@ -34,6 +34,7 @@ func main() {
 
 //Load Balancing proxy
 func main(){
+	go RunAdminServer(balancer.Pool)
 	log.Println("Load Balancer starting on :8080...")
 	log.Printf("Current Strategy: %s", balancer.Pool.Strategy)
 
@@ -53,4 +54,20 @@ func proxyHandler(w http.ResponseWriter, r *http.Request){
 	targetServer.IncrementConnections()
 	defer targetServer.DecrementConnections()
 	targetServer.ReverseProxy.ServeHTTP(w, r)
+}
+
+func RunAdminServer(pool *balancer.ServerPool) {
+    adminMux := http.NewServeMux()
+
+    adminMux.HandleFunc("GET /backends", pool.GetBackendsHandler)
+    adminMux.HandleFunc("GET /backends/{id}", pool.GetServerHandler)
+    adminMux.HandleFunc("POST /backends", pool.PostServerHandler)
+    adminMux.HandleFunc("PATCH /backends/{id}", pool.UpdateServerHandler)
+    adminMux.HandleFunc("DELETE /backends/{id}", pool.DeleteServerHandler)
+
+    log.Println("Admin API is running on :9090")
+
+    if err := http.ListenAndServe(":9090", adminMux); err != nil {
+        log.Fatalf("Admin server failed: %v", err)
+    }
 }

@@ -7,6 +7,7 @@ import (
 )
 
 type Server struct {
+	ID   string  `json:"id"`
 	URL *url.URL `json:"url"`
 	Alive  bool  `json:"alive"`
 	ActiveConnections  int `json:"active_connections"`

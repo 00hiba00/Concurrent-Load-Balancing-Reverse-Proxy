@@ -10,6 +10,7 @@ type ServerPool struct {
 	mux      sync.RWMutex //to protect the backends slice
 	Backends []*models.Server
 	Current  uint64
+	LastServerID  uint64
 	Strategy string
 }
 

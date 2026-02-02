@@ -7,11 +7,6 @@ import (
 	"github.com/00hiba00/Concurrent-Load-Balancing-Reverse-Proxy/internal/models"
 )
 
-//----IMPORTANT----
-//If two people try to append a book to your slice at
-//the exact same nanosecond, your program might crash or "panic."
-//-----DEAL WITH IT LATER-----
-
 func GetItemsHandler(w http.ResponseWriter, r *http.Request){
 	store.mux.RLock()
 	defer store.mux.RUnlock()
