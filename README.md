@@ -23,7 +23,8 @@
     - [ ] *Optional:* Add performance benchmarking to compare strategy efficiency.
 - [ ] **4. Active Health Monitoring**
     - [x] Build an Admin API to manually `Add`, `Remove`, or `Check` server status.
-    - [ ] Implement an automated "Pulse" check (Active Health Check) every 5 minutes.
+    - [x] Implement an automated "Pulse" check (Active Health Check) every 5 minutes.
+    - [x] Implement **Failover Logic**: Automatically bypass down servers and redirect to functional ones.
 
 ### Phase 3: Advanced Traffic Management
 - [ ] **5. Persistence & Hardware Optimization**

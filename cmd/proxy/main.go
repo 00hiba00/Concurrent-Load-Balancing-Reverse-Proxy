@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
+
 	"github.com/00hiba00/Concurrent-Load-Balancing-Reverse-Proxy/internal/balancer"
 )
 
@@ -34,6 +36,10 @@ func main() {
 
 //Load Balancing proxy
 func main(){
+	ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+	go balancer.Pool.HealthCheck(ctx)
+
 	go RunAdminServer(balancer.Pool)
 	log.Println("Load Balancer starting on :8080...")
 	log.Printf("Current Strategy: %s", balancer.Pool.Strategy)
@@ -46,14 +52,25 @@ func main(){
 }
 
 func proxyHandler(w http.ResponseWriter, r *http.Request){
-	targetServer := balancer.Pool.GetNextServer()
-	if targetServer == nil{
-		http.Error(w, "Service Unavailable: No healthy backends", http.StatusServiceUnavailable)
-		return
+	for range 3{
+		targetServer := balancer.Pool.GetNextServer()
+		if targetServer == nil{
+			http.Error(w, "Service Unavailable: No healthy backends", http.StatusServiceUnavailable)
+			break
+		}
+		sucessCnx := true
+		targetServer.IncrementConnections()
+		defer targetServer.DecrementConnections()
+		targetServer.ReverseProxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+			targetServer.SetAlive(false)
+			sucessCnx = false
+		}
+		targetServer.ReverseProxy.ServeHTTP(w, r)
+		if sucessCnx {
+			return
+		}
 	}
-	targetServer.IncrementConnections()
-	defer targetServer.DecrementConnections()
-	targetServer.ReverseProxy.ServeHTTP(w, r)
+	http.Error(w, "All backends are currently unreachable", http.StatusServiceUnavailable)
 }
 
 func RunAdminServer(pool *balancer.ServerPool) {

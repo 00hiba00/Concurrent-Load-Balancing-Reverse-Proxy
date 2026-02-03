@@ -77,17 +77,4 @@ func LeastConnectionStrategy(s *ServerPool) *models.Server {
 	return bestServer
 }
 
-func (s *ServerPool) HealthCheck() {
 
-}
-
-func (s *ServerPool) AddServer() {
-
-}
-func (s *ServerPool) RemoveServer() {
-
-}
-
-func (s *ServerPool) GetStatus() {
-
-}
