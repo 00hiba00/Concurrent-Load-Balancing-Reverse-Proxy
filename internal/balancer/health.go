@@ -28,10 +28,10 @@ func (s *ServerPool) HealthCheck(ctx context.Context) {
 }
 
 func (s *ServerPool) PingServers() {
-	s.mux.RLock()
+	s.Mux.RLock()
 	backends := make([]*models.Server, len(s.Backends))
 	copy(backends, s.Backends)
-	s.mux.RUnlock()
+	s.Mux.RUnlock()
 	var wg sync.WaitGroup
 	for _, srv := range backends {
 		wg.Add(1)

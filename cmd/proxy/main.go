@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
-
+	"github.com/00hiba00/Concurrent-Load-Balancing-Reverse-Proxy/internal/admin"
 	"github.com/00hiba00/Concurrent-Load-Balancing-Reverse-Proxy/internal/balancer"
 )
 
@@ -76,12 +76,15 @@ func proxyHandler(w http.ResponseWriter, r *http.Request){
 func RunAdminServer(pool *balancer.ServerPool) {
     adminMux := http.NewServeMux()
 
-    adminMux.HandleFunc("GET /backends", pool.GetBackendsHandler)
-    adminMux.HandleFunc("GET /backends/{id}", pool.GetServerHandler)
-    adminMux.HandleFunc("POST /backends", pool.PostServerHandler)
-    adminMux.HandleFunc("PATCH /backends/{id}", pool.UpdateServerHandler)
-    adminMux.HandleFunc("DELETE /backends/{id}", pool.DeleteServerHandler)
+    adminMux.HandleFunc("GET /dashboard", admin.DashboardHandler(pool))
 
+	adminMux.HandleFunc("GET /backends", admin.GetBackendsHandler(pool))
+	adminMux.HandleFunc("GET /backends/{id}", admin.GetServerHandler(pool))
+	adminMux.HandleFunc("POST /backends", admin.PostServerHandler(pool))
+	adminMux.HandleFunc("PATCH /backends/{id}", admin.UpdateServerHandler(pool))
+	adminMux.HandleFunc("DELETE /backends/{id}", admin.DeleteServerHandler(pool))
+
+	log.Println("Admin Dashboard available at http://localhost:9090/dashboard")
     log.Println("Admin API is running on :9090")
 
     if err := http.ListenAndServe(":9090", adminMux); err != nil {

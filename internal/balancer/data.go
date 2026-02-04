@@ -6,11 +6,15 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"strings"
 
 	"github.com/00hiba00/Concurrent-Load-Balancing-Reverse-Proxy/internal/models"
 )
 
-func newServer(id string, rawURL string) *models.Server {
+func NewServer(id string, rawURL string) *models.Server {
+	if !strings.HasPrefix(rawURL, "http://") && !strings.HasPrefix(rawURL, "https://") {
+        rawURL = "http://" + rawURL
+    }
 	backendURL, err := url.Parse(rawURL)
 	if err != nil {
 		log.Fatal("Invalid backend URL:", err)

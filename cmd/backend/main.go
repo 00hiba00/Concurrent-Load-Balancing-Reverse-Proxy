@@ -13,7 +13,7 @@ func main() {
 	router := backendlogic.NewRouter()
 	port := os.Args[1]
 	// 2. Start the server on 8081
-	log.Println("Backend API starting on :8081...")
+	log.Println("Backend API starting on :" + port +"...")
 	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
 		log.Fatalf("Server failed: %s", err)

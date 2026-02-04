@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Proxy Admin API</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <meta http-equiv="refresh" content="20">
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-5xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">Proxy Dashboard</h1>
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-gray-700">Add New Backend</h2>
+            <form hx-post="/backends"
+                  hx-ext="json-enc"
+                  hx-on::after-request="location.reload()"
+                  class="flex gap-4">
+                <input type="text" name="addr" placeholder="e.g. localhost:8083" required
+                       class="border border-gray-300 p-2 rounded w-full max-w-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded font-medium hover:bg-blue-700 transition">
+                    + Add Server
+                </button>
+            </form>
+        </div>
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-gray-50 border-b">
+                    <tr>
+                        <th class="p-4 font-semibold text-gray-600">Server ID</th>
+                        <th class="p-4 font-semibold text-gray-600">Address</th>
+                        <th class="p-4 font-semibold text-gray-600">Status</th>
+                        <th class="p-4 font-semibold text-gray-600">Active Connections</th>
+                        <th class="p-4 font-semibold text-gray-600 text-sm text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .Backends}}
+                    <tr class="border-b hover:bg-gray-50 transition">
+                        <td class="p-4 font-mono text-sm">{{.ID}}</td>
+                        <td class="p-4">{{.URL.Host}}</td>
+                        <td class="p-4">
+                            {{if .IsAlive}}
+                            <span class="px-2 py-1 text-xs font-bold text-green-700 bg-green-100 rounded-full">ALIVE</span>
+                            {{else}}
+                            <span class="px-2 py-1 text-xs font-bold text-red-700 bg-red-100 rounded-full">DEAD</span>
+                            {{if not .IsAlive}}<span class="text-gray-400 text-xs ml-2">(Pulse check pending)</span>{{end}}
+                            {{end}}
+                        </td>
+                        <td class="p-4 font-bold text-blue-600">{{.ActiveConnections}}</td>
+                        <td class="p-4 text-center">
+                            <button hx-delete="/backends/{{.ID}}"
+                                    hx-confirm="Are you sure you want to remove {{.ID}}?"
+                                    hx-target="closest tr"
+                                    hx-swap="outerHTML swap:0.5s"
+                                    class="text-red-500 hover:text-red-700 text-sm font-semibold px-3 py-1 border border-red-200 rounded hover:bg-red-50 transition">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-4 text-gray-500 text-sm italic">Page auto-refreshes every 20 seconds.</p>
+    </div>
+</body>
+</html>

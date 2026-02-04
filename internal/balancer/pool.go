@@ -7,7 +7,7 @@ import (
 )
 
 type ServerPool struct {
-	mux      sync.RWMutex //to protect the backends slice
+	Mux      sync.RWMutex //to protect the backends slice
 	Backends []*models.Server
 	Current  uint64
 	LastServerID  uint64
@@ -28,8 +28,8 @@ func RoundRobinStrategy(s *ServerPool) *models.Server {
 	// 1. Atomically increment the counter and get the result.
 	// Even if 1000 goroutines do this at once, they each get a unique 'next'.
 	next := atomic.AddUint64(&s.Current, 1)
-	s.mux.RLock()
-	defer s.mux.RUnlock()
+	s.Mux.RLock()
+	defer s.Mux.RUnlock()
 
 	l := uint64(len(s.Backends))
 	if l == 0 {
@@ -57,8 +57,8 @@ func RoundRobinStrategy(s *ServerPool) *models.Server {
 //looks at all available servers and picks the one
 //currently handling the fewest active requests.
 func LeastConnectionStrategy(s *ServerPool) *models.Server {
-	s.mux.RLock()
-	defer s.mux.RUnlock()
+	s.Mux.RLock()
+	defer s.Mux.RUnlock()
 
 	var bestServer *models.Server
 	minConnections := -1
