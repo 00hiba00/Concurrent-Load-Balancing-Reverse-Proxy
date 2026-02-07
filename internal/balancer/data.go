@@ -11,7 +11,7 @@ import (
 	"github.com/00hiba00/Concurrent-Load-Balancing-Reverse-Proxy/internal/models"
 )
 
-func NewServer(id string, rawURL string) *models.Server {
+func NewServer(id string, rawURL string, weight int) *models.Server {
 	if !strings.HasPrefix(rawURL, "http://") && !strings.HasPrefix(rawURL, "https://") {
         rawURL = "http://" + rawURL
     }
@@ -35,6 +35,7 @@ func NewServer(id string, rawURL string) *models.Server {
 		ID:           id,
 		URL:          backendURL,
 		Alive:        true,
+		Weight:       weight,
 		ReverseProxy: proxy,
 	}
 }

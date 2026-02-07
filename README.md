@@ -29,7 +29,7 @@
 ### Phase 3: Advanced Traffic Management
 - [ ] **5. Persistence & Hardware Optimization**
     - [x] Implement **Sticky Sessions**: Use Cookies to pin clients to specific backends.
-    - [ ] Implement **Weighted Load Balancing**: Assign $Weight_i$ to backends based on simulated capacity.
+    - [x] Implement **Weighted Load Balancing**: Assign $Weight_i$ to backends based on simulated capacity.
 - [ ] **6. Security & Hardening**
     - [ ] Enable **SSL Termination**: Proxy handles decryption (HTTPS → HTTP) and encryption.
     - [ ] Implement **Rate Limiting**: Prevent bot spam by limiting clients to $X$ requests per minute (e.g., 20 RPM).

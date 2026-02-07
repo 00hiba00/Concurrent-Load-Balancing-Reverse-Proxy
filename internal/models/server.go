@@ -11,6 +11,8 @@ type Server struct {
 	URL *url.URL `json:"url"`
 	Alive  bool  `json:"alive"`
 	ActiveConnections  int `json:"active_connections"`
+	Weight int `json:"weight"`
+	CurrentWeight int `json:"current_weight"`
 	// These fields are for internal use only
 	// We don't export them to JSON because they contain functions/locks
 	Mux  sync.RWMutex  `json:"-"`  //Multiple Readers OR One Writer
@@ -48,4 +50,17 @@ func (s *Server) DecrementConnections() {
 	if s.ActiveConnections > 0 {
 		s.ActiveConnections--
 	}
+}
+
+
+func (s *Server) GetWeight() int {
+	s.Mux.RLock()
+	defer s.Mux.RUnlock()
+	return s.Weight
+}
+
+func (s*Server) GetCurrentWeight() int {
+	s.Mux.RLock()
+	defer s.Mux.RUnlock()
+	return s.CurrentWeight
 }

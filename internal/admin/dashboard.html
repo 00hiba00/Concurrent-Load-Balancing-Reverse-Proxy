@@ -19,6 +19,8 @@
                   class="flex gap-4">
                 <input type="text" name="addr" placeholder="e.g. localhost:8083" required
                        class="border border-gray-300 p-2 rounded w-full max-w-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                <input type="number" name="weight" placeholder="Weight" value="1" min="1"
+                        class="border border-gray-300 p-2 rounded w-24 focus:ring-2 focus:ring-blue-500 outline-none">
                 <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded font-medium hover:bg-blue-700 transition">
                     + Add Server
                 </button>
@@ -31,6 +33,7 @@
                         <th class="p-4 font-semibold text-gray-600">Server ID</th>
                         <th class="p-4 font-semibold text-gray-600">Address</th>
                         <th class="p-4 font-semibold text-gray-600">Status</th>
+                        <th class="p-4 font-semibold text-gray-600">Weights</th>
                         <th class="p-4 font-semibold text-gray-600">Active Connections</th>
                         <th class="p-4 font-semibold text-gray-600 text-sm text-center">Actions</th>
                     </tr>
@@ -48,6 +51,7 @@
                             {{if not .IsAlive}}<span class="text-gray-400 text-xs ml-2">(Pulse check pending)</span>{{end}}
                             {{end}}
                         </td>
+                        <td class="p-4 font-bold text-blue-600">{{.Weight}}</td>
                         <td class="p-4 font-bold text-blue-600">{{.ActiveConnections}}</td>
                         <td class="p-4 text-center">
                             <button hx-delete="/backends/{{.ID}}"

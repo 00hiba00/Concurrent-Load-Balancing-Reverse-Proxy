@@ -56,6 +56,7 @@ func PostServerHandler(s *balancer.ServerPool) http.HandlerFunc{
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data struct {
         Addr string `json:"addr"`
+		Weight int    `json:"weight"`
     }
 	err := json.NewDecoder(r.Body).Decode(&data)
     if err != nil {
@@ -65,7 +66,7 @@ func PostServerHandler(s *balancer.ServerPool) http.HandlerFunc{
 	newIDNum := atomic.AddUint64(&s.LastServerID, 1)
     id := fmt.Sprintf("srv-%d", newIDNum)
 
-    srv := balancer.NewServer(id, data.Addr)
+    srv := balancer.NewServer(id, data.Addr, data.Weight)
 
     defer r.Body.Close()
 	s.Mux.Lock()
