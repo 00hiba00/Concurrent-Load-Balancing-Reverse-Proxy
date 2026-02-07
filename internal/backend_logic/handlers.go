@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
+
 	"github.com/00hiba00/Concurrent-Load-Balancing-Reverse-Proxy/internal/models"
 )
 
 func GetItemsHandler(w http.ResponseWriter, r *http.Request){
+	time.Sleep(3 * time.Second)
 	store.mux.RLock()
 	defer store.mux.RUnlock()
     w.Header().Set("Content-Type", "application/json")
