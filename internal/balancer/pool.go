@@ -77,4 +77,11 @@ func LeastConnectionStrategy(s *ServerPool) *models.Server {
 	return bestServer
 }
 
-
+func (s *ServerPool) GetServerByID(id string) *models.Server{
+	for _ , srv := range s.Backends{
+		if srv.ID == id{
+			return srv
+		}
+	}
+	return nil
+}

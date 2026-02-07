@@ -4,8 +4,10 @@ import (
 	"context"
 	"log"
 	"net/http"
+
 	"github.com/00hiba00/Concurrent-Load-Balancing-Reverse-Proxy/internal/admin"
 	"github.com/00hiba00/Concurrent-Load-Balancing-Reverse-Proxy/internal/balancer"
+	"github.com/00hiba00/Concurrent-Load-Balancing-Reverse-Proxy/internal/models"
 )
 
 //Proxy for one backend server
@@ -52,20 +54,39 @@ func main(){
 }
 
 func proxyHandler(w http.ResponseWriter, r *http.Request){
-	for range 3{
-		targetServer := balancer.Pool.GetNextServer()
+	var targetServer *models.Server
+	cookie, err := r.Cookie("LB_STICKY_SESSION")
+	for i := range 3{
+		if i==0 && err == nil{
+			targetServer = balancer.Pool.GetServerByID(cookie.Value)
+			if targetServer == nil || !targetServer.IsAlive() {
+				targetServer = nil
+		}
+		}
+		if targetServer == nil{
+			targetServer = balancer.Pool.GetNextServer()
+		}
 		if targetServer == nil{
 			http.Error(w, "Service Unavailable: No healthy backends", http.StatusServiceUnavailable)
-			break
+			return
 		}
 		sucessCnx := true
 		targetServer.IncrementConnections()
-		defer targetServer.DecrementConnections()
+		//if a backend dies before the health check sees it,
+		//we want to mark it as dead immediately and try another one.
 		targetServer.ReverseProxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {
 			targetServer.SetAlive(false)
 			sucessCnx = false
 		}
+		http.SetCookie(w, &http.Cookie{
+				Name:     "LB_STICKY_SESSION",
+				Value:    targetServer.ID,
+				Path:     "/",
+				HttpOnly: true,  // Security : make it invisible to frontend code
+				MaxAge:   1800,  // Each time reset 30 minutes
+    	})
 		targetServer.ReverseProxy.ServeHTTP(w, r)
+		targetServer.DecrementConnections()
 		if sucessCnx {
 			return
 		}
